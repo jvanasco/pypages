@@ -31,6 +31,8 @@ class Paginator(object):
         p.has_next
         p.previous
         p.next
+        p.pageset_next
+        p.pageset_previous
 
     :param object_num: The total number of items.
     :param per_page: The maximum number of items to include on a page,
@@ -136,3 +138,15 @@ class Paginator(object):
         """Returns a 1-based range of pages for loop.
         """
         return range(self.start, self.end + 1)
+
+    @property
+    def pageset_next(self):
+        """Returns the id of the next pagination set, or `None`"""
+        _next = self.end + 1
+        return _next if _next <= self.page_num else None 
+
+    @property
+    def pageset_previous(self):
+        """Returns the id of the previous pagination set, or `None`"""
+        _prev = self.start - 1
+        return _prev if _prev > 0 else None

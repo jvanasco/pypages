@@ -24,7 +24,7 @@ def view():
     # you can attach your objects to the paginator
     p.objects = objects
     return render_all(p=p)
-    
+
 def render_all(p):
     print "Your objects:"
     for o in p.objects:
@@ -52,12 +52,30 @@ def render(p):
     if p.next: # pythonic, of course you can check p.has_next too
         print "<li><a href='%s'>next</a></li>" % p.next
     print "</ul>"
+
+def render_bootstrap(p):
+    print "Your objects:"
+    for o in p.objects:
+        print o
+    print "Your pages:"
+    print "<ul class='pagination'>"
+    if p.pageset_previous:
+    	print '<li><a href="%s"><span aria-hidden="true">&laquo;</span><span class="sr-only">Previous</span></a></li>' % p.pageset_previous
+    else:
+    	print '<li><a href="#" class="disabled"><span aria-hidden="true">&laquo;</span><span class="sr-only">Previous</span></a></li>'
+    for i in p.pages:
+	    print '<li><a href="%s">%s</a></li>' % (i, i)
+    if p.pageset_next:
+    	print '<li><a href="%s"><span aria-hidden="true">&raquo;</span><span class="sr-only">Next</span></a></li>' % p.pageset_next
+    else:
+    	print '<li><a href="#" class="disabled"><span aria-hidden="true">&raquo;</span><span class="sr-only">Next</span></a></li>'
+    print "</ul>"
 ```
 
 ##api
 
-*class* pypages.**Paginator**(*object_num, per_page=10, current=1, start=None, range_num=10*)  
-***Parameters:***  
+*class* pypages.**Paginator**(*object_num, per_page=10, current=1, start=None, range_num=10*)
+***Parameters:***
 
 * **object_num** – the total number of items
 * **per_page** – the maximum number of items to include on a page, default 10
@@ -67,7 +85,7 @@ def render(p):
 
     NOTICE: **page range** is the pages that will be displayed, like you have one page "5, 6, 7, 8, 9, 10", then your page range ``start`` is 5 and ``range_num`` is 6.
 
-***Attributes:*** 
+***Attributes:***
 
 * **object_num** - the total number of items
 * **per_page** – the maximum number of items to include on a page
@@ -79,5 +97,7 @@ def render(p):
 * **pages** - the page range, a list like `[4, 5, 6, 7, 8]`
 * **has_previous** - bool value to indicate whether current page have previous page
 * **has_next** - bool value to indicate whether current page have next page
-* **previous** - the previous page number, if do not exist, will be `None`
-* **next** - the next page number, if do not exist, will be `None`
+* **previous** - the previous page number; if do not exist, will be `None`
+* **next** - the next page number; if do not exist, will be `None`
+* **pageset_next** - the page number of the start of the next range; if do not exist, will be `None`
+* **pageset_previous** - the page number of the start of the previous range; if do not exist, will be `None`

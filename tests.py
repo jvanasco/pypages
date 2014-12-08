@@ -2,6 +2,8 @@ import unittest
 
 from pypages import Paginator
 
+import pdb
+
 
 class PyPagesTestCase(unittest.TestCase):
 
@@ -19,6 +21,8 @@ class PyPagesTestCase(unittest.TestCase):
         self.assertTrue(p.has_next)
         self.assertEquals(p.previous, None)
         self.assertEquals(p.next, 2)
+        self.assertEquals(p.pageset_next, None)
+        self.assertEquals(p.pageset_previous, None)
 
         p = Paginator(0)
         self.assertEquals(p.object_num, 0)
@@ -33,6 +37,8 @@ class PyPagesTestCase(unittest.TestCase):
         self.assertFalse(p.has_next)
         self.assertEquals(p.previous, None)
         self.assertEquals(p.next, None)
+        self.assertEquals(p.pageset_next, None)
+        self.assertEquals(p.pageset_previous, None)
 
         p = Paginator(5)
         self.assertEquals(p.object_num, 5)
@@ -47,6 +53,8 @@ class PyPagesTestCase(unittest.TestCase):
         self.assertFalse(p.has_next)
         self.assertEquals(p.previous, None)
         self.assertEquals(p.next, None)
+        self.assertEquals(p.pageset_next, None)
+        self.assertEquals(p.pageset_previous, None)
 
         p = Paginator(45)
         self.assertEquals(p.object_num, 45)
@@ -61,6 +69,8 @@ class PyPagesTestCase(unittest.TestCase):
         self.assertTrue(p.has_next)
         self.assertEquals(p.previous, None)
         self.assertEquals(p.next, 2)
+        self.assertEquals(p.pageset_next, None)
+        self.assertEquals(p.pageset_previous, None)
 
         p = Paginator(145)
         self.assertEquals(p.object_num, 145)
@@ -75,6 +85,8 @@ class PyPagesTestCase(unittest.TestCase):
         self.assertTrue(p.has_next)
         self.assertEquals(p.previous, None)
         self.assertEquals(p.next, 2)
+        self.assertEquals(p.pageset_next, 11)
+        self.assertEquals(p.pageset_previous, None)
 
     def test_per_page(self):
         p = Paginator(145, 1)
@@ -90,6 +102,8 @@ class PyPagesTestCase(unittest.TestCase):
         self.assertTrue(p.has_next)
         self.assertEquals(p.previous, None)
         self.assertEquals(p.next, 2)
+        self.assertEquals(p.pageset_next, 11)
+        self.assertEquals(p.pageset_previous, None)
 
     def test_current(self):
         p = Paginator(145, current=5)
@@ -105,6 +119,8 @@ class PyPagesTestCase(unittest.TestCase):
         self.assertTrue(p.has_next)
         self.assertEquals(p.previous, 4)
         self.assertEquals(p.next, 6)
+        self.assertEquals(p.pageset_next, 11)
+        self.assertEquals(p.pageset_previous, None)
 
         p = Paginator(145, current=0)
         self.assertEquals(p.current, 1)
@@ -127,6 +143,8 @@ class PyPagesTestCase(unittest.TestCase):
         self.assertTrue(p.has_next)
         self.assertEquals(p.previous, None)
         self.assertEquals(p.next, 2)
+        self.assertEquals(p.pageset_next, None)
+        self.assertEquals(p.pageset_previous, 5)
 
         p = Paginator(145, current=10)
         self.assertEquals(p.start, 5)
@@ -150,6 +168,8 @@ class PyPagesTestCase(unittest.TestCase):
         self.assertTrue(p.has_next)
         self.assertEquals(p.previous, None)
         self.assertEquals(p.next, 2)
+        self.assertEquals(p.pageset_next, None)
+        self.assertEquals(p.pageset_previous, None)
 
     def test_exception(self):
         self.assertRaises(AssertionError, Paginator, -145)
@@ -157,6 +177,39 @@ class PyPagesTestCase(unittest.TestCase):
                           Paginator, 145, 0)
         self.assertRaises(AssertionError, Paginator, 145, range_num=-1)
         self.assertRaises(ValueError, Paginator, "value")
+
+    def test_pageset(self):
+        p = Paginator(100,)
+        self.assertEquals(p.pageset_next, None)
+        self.assertEquals(p.pageset_previous, None)
+
+        p = Paginator(150,)
+        self.assertEquals(p.pageset_next, 11)
+        self.assertEquals(p.pageset_previous, None)
+
+        p = Paginator(150, start=2)
+        self.assertEquals(p.pageset_next, 12)
+        self.assertEquals(p.pageset_previous, 1)
+
+        p = Paginator(150, start=3)
+        self.assertEquals(p.pageset_next, 13)
+        self.assertEquals(p.pageset_previous, 2)
+
+        p = Paginator(150, start=4)
+        self.assertEquals(p.pageset_next, 14)
+        self.assertEquals(p.pageset_previous, 3)
+
+        p = Paginator(150, start=5)
+        self.assertEquals(p.pageset_next, 15)
+        self.assertEquals(p.pageset_previous, 4)
+
+        p = Paginator(150, start=6)
+        self.assertEquals(p.pageset_next, None)
+        self.assertEquals(p.pageset_previous, 5)
+
+        p = Paginator(150, start=7)
+        self.assertEquals(p.pageset_next, None)
+        self.assertEquals(p.pageset_previous, 6)
 
 
 if __name__ == "__main__":
