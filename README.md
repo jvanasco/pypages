@@ -103,4 +103,4 @@ def render_bootstrap(p):
 * **pageset_previous** - the page number of the start of the previous range; if does not exist, will be `None`
 * **pageset_centered** - an alternate version of `pages`, in which the current page is centered within the range
 * **pageset_centered_next** - the page number of the start of the next `pageset_centered` range; if does not exist, will be `None`
-* **pageset_centered_next** - the page number of the start of the previous `pageset_centered` range; if does not exist, will be `None`
+* **pageset_centered_previous** - the page number of the start of the previous `pageset_centered` range; if does not exist, will be `None`
