@@ -33,6 +33,9 @@ class Paginator(object):
         p.next
         p.pageset_next
         p.pageset_previous
+        p.pageset_centered
+        p.pageset_centered_previous
+        p.pageset_centered_next
 
     :param object_num: The total number of items.
     :param per_page: The maximum number of items to include on a page,
@@ -46,6 +49,7 @@ class Paginator(object):
     def __init__(self, object_num, per_page=10, current=1, start=None,
                  range_num=10):
         self._start = self._end = self._current = self._page_num = None
+        self._pageset_centered = None
         self.object_num = int(object_num)
         self.per_page = int(per_page)
         self.current = current
@@ -141,12 +145,94 @@ class Paginator(object):
 
     @property
     def pageset_next(self):
-        """Returns the id of the next pagination set, or `None`"""
+        """Returns the id of the start of the next pagination set, or `None`"""
+        # return early if we don't have enough pages
+        if self.page_num < self.range_num:
+            return None
         _next = self.end + 1
         return _next if _next <= self.page_num else None 
 
     @property
     def pageset_previous(self):
         """Returns the id of the previous pagination set, or `None`"""
-        _prev = self.start - 1
-        return _prev if _prev > 0 else None
+        # return early if we haven't started a pagination yet
+        if self.start <= 1:
+            return None
+        _prev = self.start - self.range_num
+        return max(_prev, 1)
+
+    @property
+    def pageset_centered(self):
+        """Returns a 1-based range of pages for looping. the current page is centered in the list
+            example: page 10 would look like this:  [ 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+        """
+        if self._pageset_centered is None:
+            def _pageset_centered():
+                # exit early if we don't need any wrapping
+                if self.page_num <= self.range_num:
+                    return range(1, self.end)
+                _mid = int(self.range_num/2)  # the middle of a range
+                _extra = 1 if (self.range_num % 2 == 0) else 0
+                _mid = _mid - _extra  # show more after than before
+                _start = self.start - _mid
+                if (_start) <= 0:
+                    _start = 1
+                _end = _start + self.range_num - 1
+                if (_end) > self.page_num:
+                    _end = self.page_num
+                    _start = _end - self.range_num + 1
+                return range(_start, _end + 1)
+            self._pageset_centered = _pageset_centered()
+        return self._pageset_centered
+
+    @property
+    def pageset_centered_next(self):
+        """Returns the id of the next pagination set, or `None`
+        This method does a bit more grouping, trying to make the display a bit nicer.
+        """
+        # exit early if we don't need any wrapping
+        pageset = self.pageset_centered
+        if not pageset:
+            return None
+            
+        _mid = int(self.range_num/2)  # the middle of a range
+        _extra = 1 if (self.range_num % 2 == 0) else 0
+
+        next_mid = pageset[-1] + _mid
+        max_mid = self.page_num - _mid + _extra
+        
+        if next_mid >= max_mid:
+            if max_mid < self.start:
+                return None
+            return max_mid
+        return next_mid
+
+    @property
+    def pageset_centered_previous(self):
+        """Returns the id of the previous pagination set, or `None`
+        
+            1-4:
+                1,2,3,4,5,6,7
+                []
+
+            5:
+                2,3,4,5,6,7,8
+                [1]
+
+            6:
+                3,4,5,6,7,8,9
+                [2]
+        
+        """
+        # exit early if we don't need any wrapping
+        pageset = self.pageset_centered
+        if not pageset:
+            return None
+
+        _intended_start = self.start - self.range_num
+        if _intended_start <= 0:
+            _intended_start = 1
+        _mid = int(self.range_num/2)  # the middle of a range
+        if self.start >= (_intended_start + _mid):
+            return _intended_start
+        return None

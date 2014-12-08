@@ -21,8 +21,6 @@ class PyPagesTestCase(unittest.TestCase):
         self.assertTrue(p.has_next)
         self.assertEquals(p.previous, None)
         self.assertEquals(p.next, 2)
-        self.assertEquals(p.pageset_next, None)
-        self.assertEquals(p.pageset_previous, None)
 
         p = Paginator(0)
         self.assertEquals(p.object_num, 0)
@@ -37,8 +35,6 @@ class PyPagesTestCase(unittest.TestCase):
         self.assertFalse(p.has_next)
         self.assertEquals(p.previous, None)
         self.assertEquals(p.next, None)
-        self.assertEquals(p.pageset_next, None)
-        self.assertEquals(p.pageset_previous, None)
 
         p = Paginator(5)
         self.assertEquals(p.object_num, 5)
@@ -53,8 +49,6 @@ class PyPagesTestCase(unittest.TestCase):
         self.assertFalse(p.has_next)
         self.assertEquals(p.previous, None)
         self.assertEquals(p.next, None)
-        self.assertEquals(p.pageset_next, None)
-        self.assertEquals(p.pageset_previous, None)
 
         p = Paginator(45)
         self.assertEquals(p.object_num, 45)
@@ -69,8 +63,6 @@ class PyPagesTestCase(unittest.TestCase):
         self.assertTrue(p.has_next)
         self.assertEquals(p.previous, None)
         self.assertEquals(p.next, 2)
-        self.assertEquals(p.pageset_next, None)
-        self.assertEquals(p.pageset_previous, None)
 
         p = Paginator(145)
         self.assertEquals(p.object_num, 145)
@@ -85,8 +77,6 @@ class PyPagesTestCase(unittest.TestCase):
         self.assertTrue(p.has_next)
         self.assertEquals(p.previous, None)
         self.assertEquals(p.next, 2)
-        self.assertEquals(p.pageset_next, 11)
-        self.assertEquals(p.pageset_previous, None)
 
     def test_per_page(self):
         p = Paginator(145, 1)
@@ -102,8 +92,6 @@ class PyPagesTestCase(unittest.TestCase):
         self.assertTrue(p.has_next)
         self.assertEquals(p.previous, None)
         self.assertEquals(p.next, 2)
-        self.assertEquals(p.pageset_next, 11)
-        self.assertEquals(p.pageset_previous, None)
 
     def test_current(self):
         p = Paginator(145, current=5)
@@ -119,8 +107,6 @@ class PyPagesTestCase(unittest.TestCase):
         self.assertTrue(p.has_next)
         self.assertEquals(p.previous, 4)
         self.assertEquals(p.next, 6)
-        self.assertEquals(p.pageset_next, 11)
-        self.assertEquals(p.pageset_previous, None)
 
         p = Paginator(145, current=0)
         self.assertEquals(p.current, 1)
@@ -143,8 +129,6 @@ class PyPagesTestCase(unittest.TestCase):
         self.assertTrue(p.has_next)
         self.assertEquals(p.previous, None)
         self.assertEquals(p.next, 2)
-        self.assertEquals(p.pageset_next, None)
-        self.assertEquals(p.pageset_previous, 5)
 
         p = Paginator(145, current=10)
         self.assertEquals(p.start, 5)
@@ -168,8 +152,6 @@ class PyPagesTestCase(unittest.TestCase):
         self.assertTrue(p.has_next)
         self.assertEquals(p.previous, None)
         self.assertEquals(p.next, 2)
-        self.assertEquals(p.pageset_next, None)
-        self.assertEquals(p.pageset_previous, None)
 
     def test_exception(self):
         self.assertRaises(AssertionError, Paginator, -145)
@@ -183,6 +165,22 @@ class PyPagesTestCase(unittest.TestCase):
         self.assertEquals(p.pageset_next, None)
         self.assertEquals(p.pageset_previous, None)
 
+        if False:
+            for i in range(1,15):
+                p = Paginator(150, start=i)
+                print "----= %s" % i
+                print p.pages
+                if p.pageset_next:
+                    pp = Paginator(150, start=p.pageset_next)
+                    print ">> %s" % pp.pages
+                else:
+                    print ">> %s" % []
+                if p.pageset_previous:
+                    pp = Paginator(150, start=p.pageset_previous)
+                    print "<< %s" % pp.pages
+                else:
+                    print "<< %s" % []
+
         p = Paginator(150,)
         self.assertEquals(p.pageset_next, 11)
         self.assertEquals(p.pageset_previous, None)
@@ -193,23 +191,78 @@ class PyPagesTestCase(unittest.TestCase):
 
         p = Paginator(150, start=3)
         self.assertEquals(p.pageset_next, 13)
-        self.assertEquals(p.pageset_previous, 2)
+        self.assertEquals(p.pageset_previous, 1)
 
         p = Paginator(150, start=4)
         self.assertEquals(p.pageset_next, 14)
-        self.assertEquals(p.pageset_previous, 3)
+        self.assertEquals(p.pageset_previous, 1)
 
         p = Paginator(150, start=5)
         self.assertEquals(p.pageset_next, 15)
-        self.assertEquals(p.pageset_previous, 4)
+        self.assertEquals(p.pageset_previous, 1)
 
         p = Paginator(150, start=6)
         self.assertEquals(p.pageset_next, None)
-        self.assertEquals(p.pageset_previous, 5)
+        self.assertEquals(p.pageset_previous, 1)
 
-        p = Paginator(150, start=7)
+        # this range is all `None, 1`
+
+        p = Paginator(150, start=11)
         self.assertEquals(p.pageset_next, None)
-        self.assertEquals(p.pageset_previous, 6)
+        self.assertEquals(p.pageset_previous, 1)
+        
+        # we finally bump up here
+
+        p = Paginator(150, start=12)
+        self.assertEquals(p.pageset_next, None)
+        self.assertEquals(p.pageset_previous, 2)
+
+
+    def test_pageset_centered(self):
+
+        for i in range(1, 86):
+            p = Paginator(850, start=i)
+            pageset_centered = p.pageset_centered
+
+            # all should have a length of 10
+            self.assertEquals(len(pageset_centered), 10)
+            
+            # check the first item
+            if i <= 5:
+                # for the first 5, should be 1
+                self.assertEquals(pageset_centered[0], 1)
+            elif i >= 80:
+                # thereafter, should be 4 items less than the current loop
+                self.assertEquals(pageset_centered[0], 76)
+            else:
+                # thereafter, should be 4 items less than the current loop
+                self.assertEquals(pageset_centered[0], i-4)
+
+            # check the pagination - previous
+            if i <= 5:
+                # for the first 5, should be None
+                self.assertEquals(p.pageset_centered_previous, None)
+            elif (i >= 6) and (i <= 11):
+                # for the next 5, should be 1
+                self.assertEquals(p.pageset_centered_previous, 1)
+            else:
+                # thereafter, should be 10 items less than i
+                self.assertEquals(p.pageset_centered_previous, i - 10)
+
+            # check the pagination - next
+            if i <= 5:
+                # for the first 5, should be None
+                self.assertEquals(p.pageset_centered_next, 15)
+            elif (i > 5) and (i < 71):
+                self.assertEquals(p.pageset_centered_next, i + 10)
+            elif (i >= 71) and (i < 82 ):
+                # for the last 5, should be 81
+                self.assertEquals(p.pageset_centered_next, 81)
+            else:
+                # thereafter, should be 10 items more than i
+                self.assertEquals(p.pageset_centered_next, None)
+             
+
 
 
 if __name__ == "__main__":

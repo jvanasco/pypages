@@ -97,7 +97,10 @@ def render_bootstrap(p):
 * **pages** - the page range, a list like `[4, 5, 6, 7, 8]`
 * **has_previous** - bool value to indicate whether current page have previous page
 * **has_next** - bool value to indicate whether current page have next page
-* **previous** - the previous page number; if do not exist, will be `None`
-* **next** - the next page number; if do not exist, will be `None`
-* **pageset_next** - the page number of the start of the next range; if do not exist, will be `None`
-* **pageset_previous** - the page number of the start of the previous range; if do not exist, will be `None`
+* **previous** - the previous page number; if does not exist, will be `None`
+* **next** - the next page number; if does not exist, will be `None`
+* **pageset_next** - the page number of the start of the next range; if does not exist, will be `None`
+* **pageset_previous** - the page number of the start of the previous range; if does not exist, will be `None`
+* **pageset_centered** - an alternate version of `pages`, in which the current page is centered within the range
+* **pageset_centered_next** - the page number of the start of the next `pageset_centered` range; if does not exist, will be `None`
+* **pageset_centered_next** - the page number of the start of the previous `pageset_centered` range; if does not exist, will be `None`
