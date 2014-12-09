@@ -201,6 +201,9 @@ class Paginator(object):
         next_mid = pageset[-1] + _mid
         max_mid = self.page_num - _mid + _extra
         
+        if (self.start + _mid ) >= self.page_num:
+            return None
+
         if next_mid >= max_mid:
             if max_mid < self.start:
                 return None

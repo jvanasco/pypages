@@ -248,14 +248,14 @@ class PyPagesTestCase(unittest.TestCase):
             else:
                 # thereafter, should be 10 items less than i
                 self.assertEquals(p.pageset_centered_previous, i - 10)
-
+                
             # check the pagination - next
             if i <= 5:
                 # for the first 5, should be None
                 self.assertEquals(p.pageset_centered_next, 15)
             elif (i > 5) and (i < 71):
                 self.assertEquals(p.pageset_centered_next, i + 10)
-            elif (i >= 71) and (i < 82 ):
+            elif (i >= 71) and (i < 80 ):
                 # for the last 5, should be 81
                 self.assertEquals(p.pageset_centered_next, 81)
             else:
