@@ -261,8 +261,17 @@ class PyPagesTestCase(unittest.TestCase):
             else:
                 # thereafter, should be 10 items more than i
                 self.assertEquals(p.pageset_centered_next, None)
-             
-
+        
+        # ensure we have the right lengths of pages
+        test_sets =  (
+            # items, length
+            (9, 1),
+            (10, 1),
+            (11, 2),
+        )
+        for test_set in test_sets:
+            p = Paginator(test_set[0], start=1)
+            self.assertEquals(len(p.pageset_centered), test_set[1])
 
 
 if __name__ == "__main__":

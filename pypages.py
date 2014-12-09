@@ -170,7 +170,7 @@ class Paginator(object):
             def _pageset_centered():
                 # exit early if we don't need any wrapping
                 if self.page_num <= self.range_num:
-                    return range(1, self.end)
+                    return range(1, self.end + 1)
                 _mid = int(self.range_num/2)  # the middle of a range
                 _extra = 1 if (self.range_num % 2 == 0) else 0
                 _mid = _mid - _extra  # show more after than before
