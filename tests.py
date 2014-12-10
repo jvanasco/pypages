@@ -166,7 +166,7 @@ class PyPagesTestCase(unittest.TestCase):
         self.assertEquals(p.pageset_previous, None)
 
         if False:
-            for i in range(1,15):
+            for i in range(1, 15):
                 p = Paginator(150, start=i)
                 print "----= %s" % i
                 print p.pages
@@ -210,13 +210,12 @@ class PyPagesTestCase(unittest.TestCase):
         p = Paginator(150, start=11)
         self.assertEquals(p.pageset_next, None)
         self.assertEquals(p.pageset_previous, 1)
-        
+
         # we finally bump up here
 
         p = Paginator(150, start=12)
         self.assertEquals(p.pageset_next, None)
         self.assertEquals(p.pageset_previous, 2)
-
 
     def test_pageset_centered(self):
 
@@ -226,7 +225,7 @@ class PyPagesTestCase(unittest.TestCase):
 
             # all should have a length of 10
             self.assertEquals(len(pageset_centered), 10)
-            
+
             # check the first item
             if i <= 5:
                 # for the first 5, should be 1
@@ -236,7 +235,7 @@ class PyPagesTestCase(unittest.TestCase):
                 self.assertEquals(pageset_centered[0], 76)
             else:
                 # thereafter, should be 4 items less than the current loop
-                self.assertEquals(pageset_centered[0], i-4)
+                self.assertEquals(pageset_centered[0], i - 4)
 
             # check the pagination - previous
             if i <= 5:
@@ -248,22 +247,22 @@ class PyPagesTestCase(unittest.TestCase):
             else:
                 # thereafter, should be 10 items less than i
                 self.assertEquals(p.pageset_centered_previous, i - 10)
-                
+
             # check the pagination - next
             if i <= 5:
                 # for the first 5, should be None
                 self.assertEquals(p.pageset_centered_next, 15)
             elif (i > 5) and (i < 71):
                 self.assertEquals(p.pageset_centered_next, i + 10)
-            elif (i >= 71) and (i < 80 ):
+            elif (i >= 71) and (i < 80):
                 # for the last 5, should be 81
                 self.assertEquals(p.pageset_centered_next, 81)
             else:
                 # thereafter, should be 10 items more than i
                 self.assertEquals(p.pageset_centered_next, None)
-        
+
         # ensure we have the right lengths of pages
-        test_sets =  (
+        test_sets = (
             # items, length
             (9, 1),
             (10, 1),

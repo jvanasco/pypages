@@ -150,7 +150,7 @@ class Paginator(object):
         if self.page_num < self.range_num:
             return None
         _next = self.end + 1
-        return _next if _next <= self.page_num else None 
+        return _next if _next <= self.page_num else None
 
     @property
     def pageset_previous(self):
@@ -171,7 +171,7 @@ class Paginator(object):
                 # exit early if we don't need any wrapping
                 if self.page_num <= self.range_num:
                     return range(1, self.end + 1)
-                _mid = int(self.range_num/2)  # the middle of a range
+                _mid = int(self.range_num / 2)  # the middle of a range
                 _extra = 1 if (self.range_num % 2 == 0) else 0
                 _mid = _mid - _extra  # show more after than before
                 _start = self.start - _mid
@@ -194,14 +194,14 @@ class Paginator(object):
         pageset = self.pageset_centered
         if not pageset:
             return None
-            
-        _mid = int(self.range_num/2)  # the middle of a range
+
+        _mid = int(self.range_num / 2)  # the middle of a range
         _extra = 1 if (self.range_num % 2 == 0) else 0
 
         next_mid = pageset[-1] + _mid
         max_mid = self.page_num - _mid + _extra
-        
-        if (self.start + _mid ) >= self.page_num:
+
+        if (self.start + _mid) >= self.page_num:
             return None
 
         if next_mid >= max_mid:
@@ -213,7 +213,7 @@ class Paginator(object):
     @property
     def pageset_centered_previous(self):
         """Returns the id of the previous pagination set, or `None`
-        
+
             1-4:
                 1,2,3,4,5,6,7
                 []
@@ -225,7 +225,7 @@ class Paginator(object):
             6:
                 3,4,5,6,7,8,9
                 [2]
-        
+
         """
         # exit early if we don't need any wrapping
         pageset = self.pageset_centered
@@ -235,7 +235,7 @@ class Paginator(object):
         _intended_start = self.start - self.range_num
         if _intended_start <= 0:
             _intended_start = 1
-        _mid = int(self.range_num/2)  # the middle of a range
+        _mid = int(self.range_num / 2)  # the middle of a range
         if self.start >= (_intended_start + _mid):
             return _intended_start
         return None
