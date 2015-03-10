@@ -74,7 +74,7 @@ def render_bootstrap(p):
 
 ##api
 
-*class* pypages.**Paginator**(*object_num, per_page=10, current=1, start=None, range_num=10*)
+*class* pypages.**Paginator**(*object_num, per_page=10, current=1, start=None, range_num=10, ensure_page_1=False*)
 ***Parameters:***
 
 * **object_num** – the total number of items
@@ -82,6 +82,9 @@ def render_bootstrap(p):
 * **current** – the current page number, default 1
 * **start** – the start index for your page range, default to be current page minus half of the page range length
 * **range_num** – the maximum page range length, default 10
+* **range_num** – the maximum page range length, default 10
+* **ensure_page_1** – if set to `True` (default is `False`) this will return `1` for page_num instead of `0`.  Sometimes you need to have 1 page, even if there is no data on it.
+
 
     NOTICE: **page range** is the pages that will be displayed, like you have one page "5, 6, 7, 8, 9, 10", then your page range ``start`` is 5 and ``range_num`` is 6.
 

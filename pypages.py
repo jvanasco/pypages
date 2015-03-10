@@ -47,9 +47,10 @@ class Paginator(object):
     """
 
     def __init__(self, object_num, per_page=10, current=1, start=None,
-                 range_num=10):
+                 range_num=10, ensure_page_1=False):
         self._start = self._end = self._current = self._page_num = None
         self._pageset_centered = None
+        self._ensure_page_1 = bool(ensure_page_1)  # set this first, because setting `self.current` will access it
         self.object_num = int(object_num)
         self.per_page = int(per_page)
         self.current = current
@@ -113,6 +114,8 @@ class Paginator(object):
         if self._page_num is None:
             self._page_num = int(math.ceil(self.object_num /
                                            float(self.per_page)))
+            if (self._page_num == 0) and self._ensure_page_1:
+                self._page_num = 1
         return self._page_num
 
     @property
